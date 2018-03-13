@@ -1,7 +1,23 @@
 import React, { Component } from 'react';
 import FilmRow from './FilmRow';
+import { toggleFave, clickDetails } from '../actions/index';
+import { connect } from 'react-redux';
 
-class FilmListing extends Component {
+const mapDispatchToProps = dispatch => {
+  return {
+    toggleFave: film => dispatch(toggleFave(film)),
+    clickDetails: film => dispatch(clickDetails(film))
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    films: state.films,
+    faves: state.faves
+  }
+}
+
+class ConnectedFilmListing extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -31,8 +47,8 @@ class FilmListing extends Component {
 
     let allFilms = filmsToShow.map( (film,index) => {
       return(
-        <FilmRow onFaveToggle={() => this.props.onFaveToggle(film)}
-          onDetailsClick={() => this.props.onDetailsClick(film)}
+        <FilmRow onFaveToggle={() => this.props.toggleFave(film)}
+          onDetailsClick={() => this.props.clickDetails(film)}
           title={film.title}
           date={film.release_date}
           key={film.id}
@@ -63,4 +79,5 @@ class FilmListing extends Component {
   }
 }
 
+const FilmListing = connect(mapStateToProps, mapDispatchToProps)(ConnectedFilmListing)
 export default FilmListing;
